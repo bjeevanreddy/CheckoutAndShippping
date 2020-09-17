@@ -90,7 +90,7 @@ const Shipping = (props) => {
           canedit={canedit}
         />
         <div className="secondpart">
-          <div className="address-list">
+          <div className={values.length > 0 ? "address-list" : "address-list1"}>
             <h2>Select Address for delivery</h2>
             {values.length > 0 ? (
               values.map((v) => (
@@ -102,7 +102,7 @@ const Shipping = (props) => {
                 />
               ))
             ) : (
-              <div>
+              <div className="address-list2">
                 <span>No Addresses Were Added</span>
               </div>
             )}

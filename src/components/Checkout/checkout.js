@@ -1,8 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import "./checkout.css";
 import Cart from "../Checkout/cart";
+import { v1 as uuidv } from "uuid";
 import Card from "../Checkout/cards";
-const Checkout = () => {
+const Checkout = (props) => {
+  const [values, setValues] = useState([]);
+  const [card, setCard] = useState({
+    nameOnCard: "",
+    cardNo: "",
+    exp: "",
+    year: "",
+    cvv: ""
+  });
+  const [id, setId] = useState(uuidv());
   const things = [
     {
       id: Math.floor(Math.random() * 100) + 1,
@@ -10,52 +20,33 @@ const Checkout = () => {
       image: "https://via.placeholder.com/60x60",
       price: 200,
       quantity: 4
-    },
-    {
-      id: Math.floor(Math.random() * 100) + 1,
-      item: "Shirts",
-      image: "https://via.placeholder.com/60x60",
-      price: 400,
-      quantity: 2
-    },
-    {
-      id: Math.floor(Math.random() * 100) + 1,
-      item: "Pants",
-      image: "https://via.placeholder.com/60x60",
-      price: 200,
-      quantity: 4
-    },
-    {
-      id: Math.floor(Math.random() * 100) + 1,
-      item: "Shirts",
-      image: "https://via.placeholder.com/60x60",
-      price: 400,
-      quantity: 2
     }
   ];
-  const cards = [
-    {
-      name: "jeevan",
-      cardNumber: "1234567812345678",
-      month: "12",
-      year: "2020",
-      cvv: "401"
-    },
-    {
-      name: "Kavya",
-      cardNumber: "1234567812345678",
-      month: "07",
-      year: "2024",
-      cvv: "123"
-    },
-    {
-      name: "XXXX",
-      cardNumber: "1234567812345678",
-      month: "07",
-      year: "2024",
-      cvv: "123"
-    }
-  ];
+
+  const handleChange = (e) => {
+    var value = e.target.value;
+    setCard({ ...card, [e.target.name]: value });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const newCard = {
+      id: id,
+      CardAdded: card
+    };
+    console.log(newCard);
+    const updatelist = setValues({ ...values, newCard });
+    console.log(updatelist);
+    setValues(updatelist);
+    setId(uuidv());
+    setCard({
+      ...card,
+      nameOnCard: "",
+      cardNo: "",
+      exp: "",
+      year: "",
+      cvv: ""
+    });
+  };
   return (
     <div className="checkout">
       <div className="mainheading">
@@ -117,34 +108,62 @@ const Checkout = () => {
                 Add New Card
                 <hr />
               </div>
-              <div>
-                <input
-                  type="text"
-                  name="nameOnCard"
-                  placeholder="Name On card"
-                  required
-                />
-              </div>
-              <div>
-                <input
-                  type="text"
-                  name="cardNo"
-                  placeholder="1111-2222-3333-4444"
-                  required
-                />
-              </div>
-              <div>
-                <input type="number" name="exp" placeholder="Month" required />/
-                <input type="number" name="year" placeholder="Year" required />
-              </div>
-              <div>
-                <input type="number" name="cvv" placeholder="143" required />
-              </div>
-              <div className="addCardButton">
-                <button>
-                  <i className="fa fa-plus"></i>Add
-                </button>
-              </div>
+              <form onSubmit={handleSubmit}>
+                <div>
+                  <input
+                    type="text"
+                    name="nameOnCard"
+                    placeholder="Name On card"
+                    value={card.nameOnCard}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    name="cardNo"
+                    placeholder="1111-2222-3333-4444"
+                    value={card.cardNo}
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div>
+                  <input
+                    type="number"
+                    name="exp"
+                    placeholder="Month"
+                    value={card.exp}
+                    required
+                    onChange={handleChange}
+                  />
+                  /
+                  <input
+                    type="number"
+                    name="year"
+                    placeholder="Year"
+                    value={card.year}
+                    required
+                    onChange={handleChange}
+                  />
+                </div>
+                <div>
+                  <input
+                    type="number"
+                    name="cvv"
+                    value={card.cvv}
+                    placeholder="143"
+                    onChange={handleChange}
+                    required
+                  />
+                </div>
+                <div className="addCardButton">
+                  <button>
+                    <i className="fa fa-plus"></i>Add
+                  </button>
+                </div>
+              </form>
             </div>
             <div className="allCards">
               <div className="address-heading">
@@ -154,9 +173,13 @@ const Checkout = () => {
                 </span>
                 <hr />
               </div>
-              {cards.map((card, index = 0) => (
-                <Card key={index} card={card} />
-              ))}
+              {values.length > 0 ? (
+                values.map((v) => <Card key={v.id} card={v} />)
+              ) : (
+                <div className="address-list2">
+                  <span>No Addresses Were Added</span>
+                </div>
+              )}
             </div>
             <div className="block">
               <button>

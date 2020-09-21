@@ -1,6 +1,6 @@
 import React from "react";
 
-const Card = ({ card }) => {
+const Card = ({ card, handleDelete }) => {
   return (
     <div className="card-view">
       <div className="cardSelect">
@@ -30,6 +30,9 @@ const Card = ({ card }) => {
               card.CardAdded.cvv.substring(1, 3).replace(/[0-9]/g, "*")}
           </p>
         </div>
+      </div>
+      <div className="cardSelect">
+        <button onClick={() => handleDelete(card.id)}>x</button>
       </div>
     </div>
   );

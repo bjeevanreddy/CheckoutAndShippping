@@ -3,6 +3,8 @@ import "./checkout.css";
 import Cart from "../Checkout/cart";
 import { v1 as uuidv } from "uuid";
 import Card from "../Checkout/cards";
+import Address from "./address";
+import NewCard from "./newCard";
 const Checkout = (props) => {
   const [values, setValues] = useState([]);
   const [card, setCard] = useState({
@@ -27,15 +29,20 @@ const Checkout = (props) => {
     var value = e.target.value;
     setCard({ ...card, [e.target.name]: value });
   };
+  const handleDelete = (id) => {
+    const filteredCard = values.filter((item) => item.id !== id);
+    setValues(filteredCard);
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     const newCard = {
       id: id,
       CardAdded: card
     };
-    console.log(newCard);
-    const updatelist = setValues({ ...values, newCard });
-    console.log(updatelist);
+
+    // console.log(newCard);
+    const updatelist = [...values, newCard];
+    // console.log(updatelist);
     setValues(updatelist);
     setId(uuidv());
     setCard({
@@ -53,36 +60,7 @@ const Checkout = (props) => {
         <h2>Checkout</h2>
       </div>
       <div className="first-block">
-        <div className="address-card">
-          <div className="address-heading">
-            <hr />
-            <span id="heading">
-              <i className="fa fa-truck"></i>Shipping Address
-            </span>
-            <hr />
-          </div>
-          <div>
-            <div>
-              <p className="username">Jeevan Reddy</p>
-            </div>
-            <div>
-              <p>77A,usa,california</p>
-            </div>
-            <div>
-              <p>New Lane,beklers street</p>
-            </div>
-            <div>
-              <p>8179523137</p>
-            </div>
-            <div>
-              <p>
-                <span id="email">
-                  <b>bjeevanreddy45@gmail.com</b>
-                </span>
-              </p>
-            </div>
-          </div>
-        </div>
+        <Address />
         <div className="cart">
           <div className="address-heading">
             <hr />
@@ -108,62 +86,11 @@ const Checkout = (props) => {
                 Add New Card
                 <hr />
               </div>
-              <form onSubmit={handleSubmit}>
-                <div>
-                  <input
-                    type="text"
-                    name="nameOnCard"
-                    placeholder="Name On card"
-                    value={card.nameOnCard}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div>
-                  <input
-                    type="text"
-                    name="cardNo"
-                    placeholder="1111-2222-3333-4444"
-                    value={card.cardNo}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div>
-                  <input
-                    type="number"
-                    name="exp"
-                    placeholder="Month"
-                    value={card.exp}
-                    required
-                    onChange={handleChange}
-                  />
-                  /
-                  <input
-                    type="number"
-                    name="year"
-                    placeholder="Year"
-                    value={card.year}
-                    required
-                    onChange={handleChange}
-                  />
-                </div>
-                <div>
-                  <input
-                    type="number"
-                    name="cvv"
-                    value={card.cvv}
-                    placeholder="143"
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
-                <div className="addCardButton">
-                  <button>
-                    <i className="fa fa-plus"></i>Add
-                  </button>
-                </div>
-              </form>
+              <NewCard
+                card={card}
+                handleChange={handleChange}
+                handleSubmit={handleSubmit}
+              />
             </div>
             <div className="allCards">
               <div className="address-heading">
@@ -174,7 +101,9 @@ const Checkout = (props) => {
                 <hr />
               </div>
               {values.length > 0 ? (
-                values.map((v) => <Card key={v.id} card={v} />)
+                values.map((v) => (
+                  <Card key={v.id} card={v} handleDelete={handleDelete} />
+                ))
               ) : (
                 <div className="address-list2">
                   <span>No Addresses Were Added</span>
